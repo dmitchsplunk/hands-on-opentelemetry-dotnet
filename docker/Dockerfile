@@ -8,11 +8,11 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["sampleapp.csproj", "sampleapp/"]
-RUN dotnet restore "./sampleapp/./sampleapp.csproj"
-WORKDIR "/src/sampleapp"
+COPY ["diceroll-app.csproj", "diceroll-app/"]
+RUN dotnet restore "./diceroll-app/./diceroll-app.csproj"
+WORKDIR "/src/diceroll-app"
 COPY . .
-RUN dotnet build "./sampleapp.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./diceroll-app.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Add dependencies for splunk-otel-dotnet-install.sh
 RUN apt-get update && \
@@ -26,7 +26,7 @@ RUN sh ./splunk-otel-dotnet-install.sh
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./sampleapp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./diceroll-app.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 
@@ -39,4 +39,4 @@ COPY --from=publish /app/publish .
 COPY entrypoint.sh .
 
 ENTRYPOINT ["sh", "entrypoint.sh"]
-CMD ["dotnet", "sampleapp.dll"]
+CMD ["dotnet", "diceroll-app.dll"]
