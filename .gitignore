@@ -1,0 +1,4 @@
+bin/
+obj/
+splunk-otel-dotnet-install.sh
+.idea/
