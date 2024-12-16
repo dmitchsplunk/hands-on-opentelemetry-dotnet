@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: diceroll
+  labels:
+    app: diceroll
+spec:
+  type: ClusterIP
+  selector:
+    app: diceroll
+  ports:
+    - port: 8080
+      protocol: TCP

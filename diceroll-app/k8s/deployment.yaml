@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: diceroll
+spec:
+  selector:
+    matchLabels:
+      app: diceroll
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: diceroll
+    spec:
+      containers:
+        - name: diceroll
+          image: docker.io/library/diceroll:1.2
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://$(NODE_IP):4317"
+            - name: OTEL_SERVICE_NAME
+              value: "diceroll"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "deployment.environment=otel-yourname"   

@@ -38,5 +38,8 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 COPY entrypoint.sh .
 
+ENV OTEL_SERVICE_NAME=diceroll-app
+ENV OTEL_RESOURCE_ATTRIBUTES='deployment.environment=otel-yourname'
+
 ENTRYPOINT ["sh", "entrypoint.sh"]
 CMD ["dotnet", "diceroll-app.dll"]
